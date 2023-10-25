@@ -97,4 +97,11 @@ Github：https://github.com/Remyuu/GAMES101-Homework
 
 # 教材
 
-## [Fundamentals of Computer Graphics, Fourth Edition](
+## [Fundamentals of Computer Graphics, Fourth Edition](https://remoooo.com/it/740.html)
+
+
+
+
+
+
+
