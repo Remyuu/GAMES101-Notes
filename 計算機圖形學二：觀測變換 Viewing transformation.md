@@ -23,9 +23,11 @@
 這一章內容：
 
 - 三維變換 3D transformations
+  
   - 羅德里格斯旋转公式 Rodrigues' rotation formula（難點）
 
 - 觀測變換（視圖變換） Viewing transformation
+  
   - 模型變換 modeling tranformation
   - **攝像機**/**視圖**變換 **camera**/**view** transformation
   - 投影變換 projection tranformation
@@ -43,26 +45,26 @@
 - 在齊次座標系中，$\left(\begin{array}{}x\\y\\z\\w\end{array}\right)$代表三維空間中的一個點$\left(\begin{array}{}x/w\\y/w\\z/w\\1\end{array}\right),w\ne0$.
 
 - 用4x4的矩陣表示三位仿射變換：
+  
   $$
   \left(\begin{array}{l}
-  x^{\prime} \\
-  y^{\prime} \\
-  z^{\prime} \\
-  1
-  \end{array}\right)=\left(\begin{array}{lllc}
-  a & b & c & t_x \\
-  d & e & f & t_y \\
-  g & h & i & t_z \\
-  0 & 0 & 0 & 1
-  \end{array}\right) \cdot\left(\begin{array}{l}
-  x \\
-  y \\
-  z \\
-  1
-  \end{array}\right)
-  \tag{1}
+x^{\prime} \\
+y^{\prime} \\
+z^{\prime} \\
+1
+\end{array}\right)=\left(\begin{array}{lllc}
+a & b & c & t_x \\
+d & e & f & t_y \\
+g & h & i & t_z \\
+0 & 0 & 0 & 1
+\end{array}\right) \cdot\left(\begin{array}{l}
+x \\
+y \\
+z \\
+1
+\end{array}\right)
+\tag{1}
   $$
-
 
 ### 2.1.1 縮放與平移 Scale&Translation
 
@@ -133,8 +135,6 @@ $$
 \tag{6}
 $$
 
-
-
 - 類似的，繞x軸則只改變y和z：
 
 $$
@@ -156,8 +156,6 @@ $$
 \tag{8}
 $$
 
-
-
 - 繞y軸同理：
 
 $$
@@ -178,8 +176,6 @@ $$
 \end{array}\right) \\
 \tag{10}
 $$
-
-
 
 但是我們發現，y軸 **(9),(10)** 這裡的有一些**奇怪**。
 
@@ -216,6 +212,7 @@ $$
 - 其中，$n$軸默認是過圓點$(0,0)$的且是單位向量；$N=n^*$，即$N$是$n$的矩陣形式（需要可以回顧上一章節 [1.2.7](https://remoooo.com/cg/1.html#ci_title16) 的內容）。
 
 - 推導思路：假設是向量$a$繞著n軸旋轉至**$b$**，則將**$a$**分解為平行於n軸的分量（發現是不變的）加上垂直於n軸的分量。
+
 - 詳細推導過程：https://www.bilibili.com/video/BV1Eu411r7GC/ 
 
 ## 2.2 觀測變換 View Transformation
@@ -257,16 +254,16 @@ $$
 
 - $$
   \begin{aligned}
-  w & =-\frac{g}{\|g\|} \\
-  u & =\frac{t \times w}{\|t \times w\|} \\
-  v & =w \times u
-  \end{aligned}
-  \tag{12}
+w & =-\frac{g}{\|g\|} \\
+u & =\frac{t \times w}{\|t \times w\|} \\
+v & =w \times u
+\end{aligned}
+\tag{12}
   $$
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/nh1NygOwr6xQjtH.png" alt="image-20230409152654276" style="zoom:50%;" />
 
--  $u,v,w$ 分別對應笛卡爾座標系中的 $x,y,z$ 
+- $u,v,w$ 分別對應笛卡爾座標系中的 $x,y,z$ 
 - $g$ 向量對應 $z$ 軸（ $w$ 軸）的負方向
 - $e$ 向量對應座標原點
 
@@ -311,6 +308,7 @@ https://stackoverflow.com/questions/36573283/from-perspective-picture-to-orthogr
 - 投影變換分為**正交投影變換**和**透視投影變換**。
 
 - 投影變換，簡單的說就是3D->2D的變換。
+
 - <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/dZ6G1kAMvqNJCnw.png" alt="image-20230409154758458" style="zoom:25%;" />左圖是正交投影變換、右圖是透視投影變換。
 
 #### 2.2.3.1 正交投影變換 The Orthographic Projection Transformation
@@ -359,15 +357,19 @@ $$
 
 - 1. 將$(x,y,z)$投影到屏幕上，就變成了$(x',y',z')$
   2. 原點是視點，$z=-n$表示投影平面，利用**相似三角形**得出投影後的$x,y$座標
+
 - 現在我們清楚的是，xOy平面的變換過程，但是z怎麼變化尚不清楚。
+  
   1. $x'=\frac{n}{z}x$
   2. $y'=\frac{n}{z}y$
   3. $z'=??$
+
 - 回顧一個齊次座標的性質
+  
   - $(x,y,z,1)=(kx,ky,kz,k\ne0)$
   - $(x,y,z,1)=(xz,yz,z2,z\ne0)$
   - 例子：$(2,0,0,2)=(1,0,0,1)$，都代表三維空間中的點$(1,0,0)$。
-  
+
 - 在齊次座標中，我們可以根據上面的推倒，寫出：
 
 $$
@@ -378,7 +380,6 @@ $$
 $$
 
 - 我們想要求處上面方程中的變換矩陣$M_{\text {persp } \rightarrow \text { ortho }}^{(4 \times 4)}$，則只需解**方程（16）**：
-
 
 $$
 M_{persp\rightarrow ortho}^{(4 \times 4)}
@@ -500,8 +501,6 @@ $$
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/PEwQca1MtKTgqbL.png" alt="image-20230409173942468" style="zoom:50%;" />
 
-
-
 - 做完模型、攝像機、投影變換之後，所有需要的物體都在$[-1,1]^3$這個立方體內了。
 - 我們將$x=-1$放在屏幕的左側，$x=+1$仿仔屏幕的右側，$y=-1$放在屏幕的底部，$y=+1$放在屏幕的頂部。
 - 屏幕上每一個像素都“擁有”1個以整數座標為中心的單位正方形。在渲染的時候，需要將 $[-1,1]^2$ 映射到 $[-0.5,n_x-0.5]*[-0.5,n_y-0.5]$ ，公式如下：
@@ -538,8 +537,6 @@ M=M_{viewport}M_{persp}M_{cam}M_{model}
 $$
 
 - 模型、相機、投影、視口
-
-
 
 ### 2.2.5 變換模型代碼(c++) C++ Code（附）
 
@@ -597,6 +594,7 @@ Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
 3. 投影透視變換 Perspective Projection
 
 本函數需要寫出兩個矩陣：
+
 $$
 M_{persp\rightarrow ortho}=\left(\begin{array}{cccc}
 n & 0 & 0 & 0 \\
@@ -607,6 +605,9 @@ n & 0 & 0 & 0 \\
 \tag{22}
 $$
 
+
+
+
 $$
 \mathbf{M}_{\text {orth }}=\left(\begin{array}{cccc}
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
@@ -616,8 +617,6 @@ $$
 \end{array}\right)
 \tag{14}
 $$
-
-
 
 ```c++
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar){
