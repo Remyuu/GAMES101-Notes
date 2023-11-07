@@ -1,4 +1,5 @@
 本章快速瀏覽計算機圖形學相關的數學知識，包裹：
+
 1. 向量 Vector
 2. 矩陣 Matrix
 3. 基礎變換矩陣 Transformation Matrices
@@ -35,10 +36,10 @@
 - 向量的長度（Magnitude or length）寫作 $$\|\vec{a}\|$$
 
 - 單位向量
+  
   - 長度為1的向量
-  - 將向量標準化 $$\hat{a}=\vec{a} /\|\vec{a}\|$$
+  - 將向量標準化 $\hat{a}=\vec{a} /\|\vec{a}\|$
   - 用於表示向量的方向
-
 
 ### 1.1.3 向量運算 Vector Operations
 
@@ -52,6 +53,7 @@
 ### 1.1.4 笛卡爾座標系 Cartesian Coordinates
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/BUop9cVvhlNF8AH.png" alt="image-20230408140639520" style="zoom:50%;" />
+
 $$
 A=\left(\begin{array}{l}x\\y\end{array}\right)
 $$
@@ -67,6 +69,7 @@ $$
 ### 1.1.5 向量點積 Dot (scalar) Product
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/1ToRDUamExniC4g.png" alt="image-20230408141128845" style="zoom: 67%;" />
+
 $$
 \begin{gathered}
 \vec{a} \cdot \vec{b}=\|\vec{a}\|\|\vec{b}\| \cos \theta \\
@@ -117,6 +120,7 @@ $$
 ### 1.1.6 向量叉積 Cross (vector) Product
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/AywxpIKlro9bfJO.png" alt="image-20230408142620454" style="zoom:50%;" />
+
 $$
 \|a \times b\|=\|a\|\|b\| \sin \phi
 $$
@@ -142,6 +146,7 @@ z_a x_b-x_a z_b \\
 x_a y_b-y_a x_b
 \end{array}\right)
 $$
+
 $$
 \vec{a} \times \vec{b}=A^* b=\left(\begin{array}{ccc}
 0 & -z_a & y_a \\
@@ -155,6 +160,7 @@ z_b
 $$
 
 推導過程：
+
 $$
 \begin{aligned}
 \mathbf{a} \times \mathbf{b}= & \left(x_a \mathbf{x}+y_a \mathbf{y}+z_a \mathbf{z}\right) \times\left(x_b \mathbf{x}+y_b \mathbf{y}+z_b \mathbf{z}\right) \\
@@ -164,6 +170,7 @@ $$
 = & \left(y_a z_b-z_a y_b\right) \mathbf{x}+\left(z_a x_b-x_a z_b\right) \mathbf{y}+\left(x_a y_b-y_a x_b\right) \mathbf{z} .
 \end{aligned}
 $$
+
 $$
 \mathbf{a} \times \mathbf{b}=\left(y_a z_b-z_a y_b, z_a x_b-x_a z_b, x_a y_b-y_a x_b\right)
 $$
@@ -221,6 +228,7 @@ p_{r 1} & \cdots & p_{r j} & \cdots & p_{r c}
 $$
 
 其中，
+
 $$
 p_{i j}=a_{i 1} b_{1 j}+a_{i 2} b_{2 j}+\cdots+a_{i m} b_{m j}
 $$
@@ -286,6 +294,7 @@ $$
 2 & 4 & 6
 \end{array}\right)
 $$
+
 - 性質
 
 $$
@@ -313,6 +322,7 @@ $$
 ### 1.2.7 矩陣形式的向量乘法
 
 - 點積
+
 $$
 \begin{aligned}
 & \vec{a} \cdot \vec{b}=\vec{a}^T \vec{b} \\
@@ -325,7 +335,9 @@ z_b
 \end{array}\right)=\left(x_a x_b+y_a y_b+z_a z_b\right)
 \end{aligned}
 $$
+
 - 叉積
+
 
 $$
 \vec{a} \times \vec{b}=A^* b=\left(\begin{array}{ccc}
@@ -354,6 +366,7 @@ s_x & 0 \\
 0 & s_y
 \end{array}\right] .
 $$
+
 - 縮放對矩陣做了什麼？
 
 $$
@@ -372,6 +385,7 @@ $$
 - 例子：
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/pGTvkjmfCMlwRDs.png" alt="image-20230408154330557" style="zoom:50%;" />
+
 $$
 \left[\begin{array}{l}
 x^{\prime} \\
@@ -384,7 +398,9 @@ x \\
 y
 \end{array}\right]
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/pkzUbjwPgaRTs3h.png" alt="image-20230408154430826" style="zoom:50%;" />
+
 $$
 \left[\begin{array}{l}
 x^{\prime} \\
@@ -413,8 +429,6 @@ $$
 0 & -1
 \end{array}\right]
 $$
-
-
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/L9y5QqtMckUCaxN.png" alt="image-20230408154815241" style="zoom:50%;" />
 
@@ -455,6 +469,7 @@ $$
 - 例子：
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/UIO1DCYtucQTKbg.png" alt="image-20230408154937046" style="zoom:50%;" />
+
 $$
 \left[\begin{array}{}
 x^{\prime} \\
@@ -473,6 +488,7 @@ $$
 - **默認關於原點（0,0）逆時針旋轉**
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/MsPI1HRNmzxd6gS.png" alt="image-20230408155212728" style="zoom:50%;" />
+
 $$
 \mathbf{R}_\theta=\left[\begin{array}{cc}
 \cos \theta & -\sin \theta \\
@@ -488,13 +504,16 @@ $$
 我們想要表示下面的平移矩陣，
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/KX5u9kaBCRqlGvt.png" alt="image-20230408162236085" style="zoom:50%;" />
+
 $$
 \begin{aligned}
 & x^{\prime}=x+t_x \\
 & y^{\prime}=y+t_y
 \end{aligned}
 $$
+
 顯然的，這個變換並不是**線性變換**。
+
 $$
 \left[\begin{array}{l}
 x^{\prime} \\
@@ -547,6 +566,7 @@ y+t_y \\
 $$
 
 - 其中，$w$維度只允許0或1
+  
   - 向量 + 向量 = 向量
   - 座標 - 座標 = 向量
   - 座標 + 向量 = 座標
@@ -618,8 +638,6 @@ $$
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/FDT1yqxjb72EHWM.png" alt="image-20230408165113057" style="zoom:50%;" />
 
-
-
 ### 1.4.5 變換的分解與合成 Composition and Decomposition of Transformations
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/G4rg2jby69ozmwi.png" alt="image-20230408160507059" style="zoom:50%;" />
@@ -629,10 +647,8 @@ $$
 - 答：**先縮放再平移**。
 
 - 圖解：
-
+  
   <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/I4JgN71mxksnLfZ.png" alt="image-20230408160745053" style="zoom:33%;" />
-
-
 
 - 原因是，矩陣不存在交換律。
 
@@ -679,7 +695,7 @@ $$
 - 思考：**怎麼使一個圖像繞任意點 $c$ 旋轉呢**？
 
 - 答：平移 $c$ 點到原點 $(0,0)$ ，旋轉，再平移回去。
-
+  
   即：$T(c)\cdot R(\alpha)\cdot T(-c)$
 
 ----
