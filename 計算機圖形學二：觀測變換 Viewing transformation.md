@@ -42,12 +42,12 @@
 
 - 3D向量 = $(x,y,z,0)^T$
 
-- 在齊次座標系中，$\left(\begin{array}{}x\\y\\z\\w\end{array}\right)$代表三維空間中的一個點$\left(\begin{array}{}x/w\\y/w\\z/w\\1\end{array}\right),w\ne0$.
+- 在齊次座標系中， $\left(\begin{array}{}x\\y\\z\\w\end{array}\right)$代表三維空間中的一個點$\left(\begin{array}{}x/w\\y/w\\z/w\\1\end{array}\right),w\ne0$ .
 
 - 用4x4的矩陣表示三位仿射變換：
-  
-  $$
-  \left(\begin{array}{l}
+
+$$
+\left(\begin{array}{l}
 x^{\prime} \\
 y^{\prime} \\
 z^{\prime} \\
@@ -64,7 +64,7 @@ z \\
 1
 \end{array}\right)
 \tag{1}
-  $$
+$$
 
 ### 2.1.1 縮放與平移 Scale&Translation
 
@@ -99,6 +99,7 @@ $$
 可以僅僅進行二維的拉伸：
 
 與2D變換一樣，任何3D變換矩陣都可以用SVD分解為旋轉、縮放和旋轉。任何對稱的3D矩陣都具有旋轉、縮放和逆旋轉的**特征值分解**。最後，三維旋轉可分解為三維拉伸（Shear）矩陣的乘積。
+
 $$
 \operatorname{shear-x}\left(d_y, d_z\right)=\left[\begin{array}{ccc}
 1 & d_y & d_z \\
@@ -252,14 +253,14 @@ $$
 
 - 通過上面三個定義，即可建立以$e$為原點，基底為 $u,v,w$ 的攝像機座標系（如下圖所示）。
 
-- $$
-  \begin{aligned}
+$$
+\begin{aligned}
 w & =-\frac{g}{\|g\|} \\
 u & =\frac{t \times w}{\|t \times w\|} \\
 v & =w \times u
 \end{aligned}
 \tag{12}
-  $$
+$$
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/nh1NygOwr6xQjtH.png" alt="image-20230409152654276" style="zoom:50%;" />
 
@@ -274,11 +275,12 @@ v & =w \times u
 1. 將相機移動至原點
 2. 通過旋轉矩陣將座標系重合
 
-第一步非常簡單，只需要將當前相機座標減去相機座標，即：$\left[\begin{array}{cccc}1 & 0 & 0 & -x_e \\0 & 1 & 0 & -y_e \\0 & 0 & 1 & -z_e \\0 & 0 & 0 & 1\end{array}\right]$.
+第一步非常簡單，只需要將當前相機座標減去相機座標，即： $\left[\begin{array}{cccc}1 & 0 & 0 & -x_e \\0 & 1 & 0 & -y_e \\0 & 0 & 1 & -z_e \\0 & 0 & 0 & 1\end{array}\right]$ .
 
-第二步，由於旋轉變換矩陣是一種正則基矩陣（正交矩陣 The orthogonal matrix），矩陣$M^T=M^{-1}$，所以將單位矩陣$I$旋轉至**當前**相機狀態的矩陣的逆矩陣則是：$\left[\begin{array}{cccc}x_u & y_u & z_u &0 \\x_v & y_v & z_v & 0 \\x_w & y_w & z_w & 0 \\0 & 0 & 0 & 1\end{array}\right]$.
+第二步，由於旋轉變換矩陣是一種正則基矩陣（正交矩陣 The orthogonal matrix），矩陣 $M^T=M^{-1}$ ，所以將單位矩陣$I$旋轉至**當前**相機狀態的矩陣的逆矩陣則是： $\left[\begin{array}{cccc}x_u & y_u & z_u &0 \\x_v & y_v & z_v & 0 \\x_w & y_w & z_w & 0 \\0 & 0 & 0 & 1\end{array}\right]$ .
 
 所以，定義相機變換矩陣 $M_{cam}$ ：
+
 $$
 \mathbf{M}_{\text {cam }}=\left[\begin{array}{cccc}
 \mathbf{u} & \mathbf{v} & \mathbf{w} & \mathbf{e} \\
@@ -328,7 +330,7 @@ https://stackoverflow.com/questions/36573283/from-perspective-picture-to-orthogr
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/gCU9hcOuTMv2nxp.png" alt="image-20230409160222459" style="zoom:50%;" />
 
-- 則很容易推倒出將**長方體**變換到中心是$(0,0,0)$ 且所在區域是$[-1,1]^3$的變換矩陣$M_{orth}$：
+- 則很容易推倒出將**長方體**變換到中心是$(0,0,0)$ 且所在區域是 $[-1,1]^3$ 的變換矩陣$M_{orth}$：
 
 $$
 \mathbf{M}_{\text {orth }}=\left[\begin{array}{cccc}
@@ -355,8 +357,8 @@ $$
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/sflDA65h8d4S3xb.png" alt="image-20230409161624353" style="zoom:50%;" />
 
-- 1. 將$(x,y,z)$投影到屏幕上，就變成了$(x',y',z')$
-  2. 原點是視點，$z=-n$表示投影平面，利用**相似三角形**得出投影後的$x,y$座標
+- 1. 將 $(x,y,z)$ 投影到屏幕上，就變成了 $(x',y',z')$
+  2. 原點是視點， $z=-n$ 表示投影平面，利用**相似三角形**得出投影後的 $x,y$ 座標
 
 - 現在我們清楚的是，xOy平面的變換過程，但是z怎麼變化尚不清楚。
   
@@ -379,7 +381,7 @@ $$
 \tag{15}
 $$
 
-- 我們想要求處上面方程中的變換矩陣$M_{\text {persp } \rightarrow \text { ortho }}^{(4 \times 4)}$，則只需解**方程（16）**：
+- 我們想要求處上面方程中的變換矩陣 $M_{\text {persp } \rightarrow \text { ortho }}^{(4 \times 4)}$ ，則只需解**方程（16）**：
 
 $$
 M_{persp\rightarrow ortho}^{(4 \times 4)}
@@ -412,7 +414,7 @@ M_{persp\rightarrow ortho}^{(4 \times 4)}
 \tag{18}
 $$
 
-- 由**方程（18）**，將變換矩陣$M$的第三行單獨拿出來，並且方程右邊的$n^2$肯定與$x,y$**無關**，所以得到**方程（19）**：
+- 由**方程（18）**，將變換矩陣$M$的第三行單獨拿出來，並且方程右邊的 $n^2$ 肯定與 $x,y$ **無關**，所以得到**方程（19）**：
 
 $$
 \left(\begin{array}{llll}0 & 0 & A & B\end{array}\right)
@@ -423,9 +425,9 @@ An + B =n^2
 \tag{19}
 $$
 
-- 且我們欲求的變換矩陣$M_{persp \rightarrow ortho}$第三行的前兩個數字也確定了
+- 且我們欲求的變換矩陣 $M_{persp \rightarrow ortho}$ 第三行的前兩個數字也確定了
 
-- 又因為遠平面$f$的中間點$(0,0,f)$經過變換依然是$(0,0,f)$，所以將$(0,0,f)$帶入**方程（16）**，得到**方程（20）**：
+- 又因為遠平面 $f$ 的中間點 $(0,0,f)$ 經過變換依然是 $(0,0,f)$ ，所以將 $(0,0,f)$ 帶入**方程（16）**，得到**方程（20）**：
 
 $$
 \left(\begin{array}{cccc}
@@ -452,7 +454,7 @@ B=-n f
 \tag{21}
 $$
 
-- 則求出“壓縮”變換矩陣$M_{persp \rightarrow ortho}$：
+- 則求出“壓縮”變換矩陣 $M_{persp \rightarrow ortho}$ ：
 
 $$
 M_{persp\rightarrow ortho}=\left(\begin{array}{cccc}
@@ -464,7 +466,7 @@ n & 0 & 0 & 0 \\
 \tag{22}
 $$
 
-- 所以，透視投影$M_{persp}=M_{ortho}M_{persp\rightarrow ortho}$
+- 所以，透視投影 $M_{persp}=M_{ortho}M_{persp\rightarrow ortho}$
 
 - 計算最終結果：
 
@@ -480,7 +482,7 @@ $$
 
 #### 2.2.3.3 關於透視矩陣的練習題
 
-- **問：在Frustum內部，任意一點經過了“壓縮”變換矩陣$M_{persp \rightarrow ortho}$的變換後，會向哪個方向移動？**
+- **問：在Frustum內部，任意一點經過了“壓縮”變換矩陣 $M_{persp \rightarrow ortho}$ 的變換後，會向哪個方向移動？**
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/8hQcfE5LyJx4j17-20230719181618709.png" alt="image-20230409161413677" style="zoom: 33%;" />
 
@@ -527,9 +529,9 @@ M_{\mathrm{viewport}}=\left[\begin{array}{cccc}
 \tag{25}
 $$
 
-- $z$方向沒有任何改變
+- $z$ 方向沒有任何改變
 
-### 2.2.5 觀測變換矩陣$M$
+### 2.2.5 觀測變換矩陣 $M$
 
 $$
 M=M_{viewport}M_{persp}M_{cam}M_{model}
@@ -605,9 +607,6 @@ n & 0 & 0 & 0 \\
 \tag{22}
 $$
 
-
-
-
 $$
 \mathbf{M}_{\text {orth }}=\left(\begin{array}{cccc}
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
@@ -644,6 +643,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
 4. 羅德里格斯旋轉公式代碼實現
 
 實現以下公式即可。
+
 $$
 \mathbf{R}(\mathbf{n}, \alpha)=\cos (\alpha) \mathbf{I}+(1-\cos (\alpha)) \mathbf{n} \mathbf{n}^T+\sin (\alpha) \underbrace{\left(\begin{array}{ccc}
 0 & -n_z & n_y \\
