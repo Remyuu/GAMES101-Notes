@@ -1,10 +1,10 @@
 本章內容：
 
 1. 頻域圖 Frequency Domain
-1. 傅立葉變換 Fourier Transform
-1. 濾波、卷積 Filtering&Convolution
-1. 抗鋸齒 Antialiasing
-1. 超採樣抗鋸齒 MSAA
+2. 傅立葉變換 Fourier Transform
+3. 濾波、卷積 Filtering&Convolution
+4. 抗鋸齒 Antialiasing
+5. 超採樣抗鋸齒 MSAA
 
 <!--more-->
 
@@ -51,7 +51,7 @@
 
 如何解决这些Sampling Artifacts？
 
-### 预滤波 (Pre-Filtering) 
+### 预滤波 (Pre-Filtering)
 
 英文全称：Antialiasing Idea: Blurring (Pre-Filtering) Before Sampling。
 
@@ -62,8 +62,6 @@
 直接点采样和反走样的区别：
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/R8qim61hGjoQa4S.png" alt="image-20230523175437264" style="zoom:33%;" />
-
-
 
 But，Why？
 
@@ -118,6 +116,7 @@ $$
 - **低通滤波器（Low-Pass Filter）**会去除高频成分，只留下低频成分，这通常会使图像模糊（因为高频成分通常对应于图像的细节和边缘）
 
 - **高通滤波器（High-Pass Filter）**则去除低频成分，只留下高频成分，这常常可以强化图像的边缘
+
 - **带通滤波器（Band-Pass Filter）**则去除过高或过低的频率成分，只保留中间的频率范围
 
 ## 卷积（Convolution）
