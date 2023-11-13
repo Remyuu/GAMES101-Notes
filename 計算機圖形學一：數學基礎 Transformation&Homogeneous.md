@@ -338,7 +338,6 @@ $$
 
 - 叉積
 
-
 $$
 \vec{a} \times \vec{b}=A^* b=\left(\begin{array}{ccc}
 0 & -z_a & y_a \\
