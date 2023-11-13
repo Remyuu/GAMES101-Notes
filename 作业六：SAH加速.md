@@ -72,8 +72,10 @@ struct BVHBuildNode {
 - 首先判断当前节点 `node` 是否为空，并且判断传入的光线 `ray` 与当前节点的边界盒（即BVH节点的边界）是否有交点。如果节点是空且没有交点，那么函数直接返回一个默认的`Intersection`实例。这里的 `Intersection` 对象没有包含任何实际的交点信息。
 
 - 否则，当前节点则是**叶子节点**或者**非终端节点的所有孩子都不可能与光线有交点**。那么进入下面的流程。
+  
   - 如果是叶子节点，那么函数会直接计算射线与该节点所包含的实际几何对象的交点，然后返回结果。在这种情况下，`node->object->getIntersection(ray)`会调用光线-三角形求交方法对当前节点下的所有物体求交。
   - 如果不是叶子节点，那么函数会递归地计算射线与该节点的左子节点和右子节点的交点，返回两个值： `hit1, hit2` 。
+
 - 然后，函数会返回离射线起点更近的那个交点作为结果。（ `hit1.distance < hit2.distance`）
 
 ```c++
@@ -98,17 +100,17 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
 这里从代码的角度讲解：
 
 1. 在BVH.cpp的 `BVHAccel` 函数中创建了 `BVH` 数据结构的根节点 `root` 。
-
+   
    并且函数会递归地构建一整颗 `BVH` 树。
-
+   
    ```c++
    root = recursiveBuild(primitives);
    ```
 
 2. 在 `recursiveBuild` 函数中，首先会创建一个新的`BVHBuildNode`对象，并计算给定的所有物体的联合边界（Union Bound），即包含**所有**物体的最小边界盒。
-
+   
    1. 如果该边界盒的对象（object）数量为1，则创建一个叶子节点，其中包含这个唯一的物体 `object` 和它的边界 `bounds` ，然后返回这个节点。
-
+      
       ```c++
       if (objects.size() == 1) {
           // Create leaf _BVHBuildNode_
@@ -119,9 +121,9 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
           return node;
       }
       ```
-
+   
    2. 如果该边界盒的对象（object）数量为2，则创建两个叶子节点，其中包含这个唯一的物体 `object` 和它的边界 `bounds` ，然后返回这个节点。
-
+      
       ```c++
       else if (objects.size() == 2) {
           node->left = recursiveBuild(std::vector{objects[0]});
@@ -130,24 +132,24 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
           return node;
       }
       ```
-
+   
    3. 如果边界盒的对象数量大于两个，则继续递归。具体递归方式如下：
 
 3. 首先计算所有物体质心（中心点）的联合边界。
-
+   
    ```c++
    for (int i = 0; i < objects.size(); ++i)
        centroidBounds = Union(centroidBounds, objects[i]->getBounds().Centroid());
    ```
 
 4. 然后找到这个边界在哪个维度（x, y, 或 z）上最大。
-
+   
    ```c++
    int dim = centroidBounds.maxExtent();
    ```
 
 5. 在此基础上，根据这个维度的质心坐标对所有物体进行**排序**。
-
+   
    ```c++
    switch (dim) {
        case 0: ...
@@ -157,7 +159,7 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
    ```
 
 6. 在排序后的物体列表中**找到中间位置**，并将列表分成两半。然后，对每一半的物体递归地调用这个函数，分别构建左子节点和右子节点。
-
+   
    ```c++
    auto middling = objects.begin() + (objects.size() / 2);
    ...
@@ -166,7 +168,7 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
    ```
 
 7. 最后，计算左子节点和右子节点的联合边界，即包含这两个子节点的最小边界盒，然后返回这个节点。
-
+   
    ```c++
    node->bounds = Union(node->left->bounds, node->right->bounds);
    ```
@@ -176,7 +178,9 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
 - Union函数的实现：传入两个边界盒（或一个盒子和一个点），返回一个能包围他们的最小的新的边界盒。
 
 - 每一个物体都有一个包围盒属性，可以调用每个物体的`getBounds()`函数来获取。构建BVH结构的过程就是创建一个层次结构的包围盒，其中每个节点的包围盒包含其所有子节点的包围盒。
+
 - 框架中BVH.cpp文件的第85行 `assert(objects.size() == (leftshapes.size() + rightshapes.size()));` ，用于验证程序的某个条件是否为真。如果该条件为假，`assert`会发送一个错误消息，并终止程序的执行。这里实际作用是检查`objects`的大小是否等于`leftshapes`和`rightshapes`的大小之和。也就是说，检查原始的物体集合`objects`是否被正确地分割为两个子集`leftshapes`和`rightshapes`。
+
 - 在最大的维度对物体进行排序排序是通过`std::sort`函数完成。这个函数传入 `objects.begin()` 和 `objects.end()` ，表示整个 `objects` 列表，和一个比较函数。比较函数是一个lambda表达式，它接受两个物体，然后返回一个布尔值，表示第一个物体是否应该在第二个物体之前。第三个参数是告诉 `sort` 函数如何进行排序，具体实现原理自行查阅百度。
 
 ## 使用SAH表面积启发式策略构建和遍历BVH
@@ -229,9 +233,9 @@ Bounding Volume Hierarchy (BVH) 是一种常见的几何体组织和索引技术
 - 对于每个轴，首先初始化一个桶（bucket）：创建一个大小为B的桶数组。B通常比较小，例如小于32。
 
 - 然后计算每一个物体p的质心（centroid），看看这个物体落在哪个桶里。
-
+  
   - 将物体p的包围盒与桶b的包围盒做并集操作，也就是**扩展桶b的包围盒**，使其能够包含物体p。
-
+  
   - 增加桶b中的物体计数。
 
 - 对于每个可能的划分平面（总共有B-1个），使用**表面积启发式（SAH）公式评估**其成本。
@@ -353,7 +357,7 @@ BVHBuildNode *BVHAccel::recursiveBuild(std::vector<Object *> objects) {
                         });
                         break;
                 }
-                
+
                 // Find the split that minimizes the SAH cost
                 for (int i = 1; i < bucketSize; i++) {
                     auto beginning = objects.begin();
@@ -398,8 +402,6 @@ BVHBuildNode *BVHAccel::recursiveBuild(std::vector<Object *> objects) {
 ## 附录 1.
 
 ### 糟糕的情况
-
-
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/ESKmJdiG93VHgPD.png" alt="slide_027" style="zoom:67%;" />
 
