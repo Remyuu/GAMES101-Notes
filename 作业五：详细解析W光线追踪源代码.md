@@ -12,8 +12,6 @@
 
 ## 回顾渲染流程
 
-
-
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/Tt2GVhbpYKNeBny.png" alt="image-20230618140909956" style="zoom: 67%;" />
 
 以下是详细流程：
@@ -78,8 +76,6 @@ z = -1.0  // 通常我们假设相机视锥体的近平面位于 z = -1 处
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/DEMoUmbI14CH3YV.png" alt="image-20230618142733351" style="zoom:50%;" />
 
-
-
 4. ### **屏幕映射（Screen Mapping）**
 
 在这个阶段，我们需要将3D场景中的物体从归一化设备坐标（Normalized Device Coordinates，NDC）映射到屏幕坐标系（Screen Coordinates）。
@@ -94,7 +90,7 @@ y_screen = ((1 - y_ndc) / 2) * height
 ```
 
 > 重复强调一下：
->
+> 
 > 注意我们在计算y坐标时使用的是`1 - y_ndc`，这是因为在NDC中，y轴是向上的，而在屏幕坐标系中，y轴是向下的。
 
 对于z坐标，通常我们会保留它在NDC中的值，并且将其传递到光栅化阶段。在光栅化阶段，这个z值通常被用来进行深度测试，以决定哪个物体应该被绘制到屏幕上。这是因为在一个复杂的3D场景中，可能会有多个物体位于同一个像素位置，我们需要某种方式来决定哪个物体是最前面的，也就是说，哪个物体应该被摄像机看到。深度测试就是解决这个问题的一种方法。
@@ -111,8 +107,6 @@ y_screen = ((1 - y_ndc) / 2) * height
 4. **Normalized Device Coordinates (NDC) Space**：在投影空间中，坐标被除以它们的齐次坐标w来执行透视除法，产生归一化设备坐标。这会将所有的坐标转换到一个[-1, 1]的立方体内。在一些旧版本的DirectX中，NDC的z坐标的范围是[0,1]，而在OpenGL和新版本的DirectX中，z坐标的范围通常是[-1, 1]。
 5. **Screen Space**：NDC空间中的对象被转换到屏幕空间，其中每个坐标都对应屏幕上的一个像素位置。
 6. **Rasterization**：在光栅化阶段，屏幕空间中的对象被转换为像素图像，可以直接显示在屏幕上。
-
-
 
 ## 光追流程
 
@@ -155,7 +149,7 @@ Vector3f reflect(const Vector3f &I, const Vector3f &N){
 }
 ```
 
->参考链接：https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
+> 参考链接：https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
 
 ### 2. `refract`: 利用斯涅尔定律计算折射光线的方向
 
@@ -370,14 +364,12 @@ Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
     float cosi = clamp(-1, 1, dotProduct(I, N));
     float etai = 1, etat = ior;
     Vector3f n = N;
-	if (cosi >= 0) { cosi = -cosi; std::swap(etai, etat); n= -N; }
+    if (cosi >= 0) { cosi = -cosi; std::swap(etai, etat); n= -N; }
     float eta = etai / etat;
     float k = 1 - eta * eta * (1 - cosi * cosi);
     return k < 0 ? 0 : eta * I - (eta * cosi + sqrtf(k)) * n;
 }
 ```
-
-
 
 ### 3. `fresnel`: 计算菲涅尔方程
 
@@ -492,8 +484,6 @@ R=\frac{R_s+R_p}{2} .
 $$
 于是这就有了上面的代码。
 
-
-
 ### 4. `trace`: 遍历所有场景中的物体，看看光线是否与其相交
 
 - **功能**: 判断光线是否与物体相交。
@@ -573,14 +563,14 @@ Vector3f castRay(const Vector3f &orig,
     if (depth > scene.maxDepth) {return Vector3f(0.0,0.0,0.0);}
     Vector3f hitColor = scene.backgroundColor;
     if (auto payload = trace(orig, dir, scene.get_objects()); payload){
-		......//part_1
+        ......//part_1
         switch (payload->hit_obj->materialType) {
             case REFLECTION_AND_REFRACTION:{
-				......}
+                ......}
             case REFLECTION:{
-				......}
+                ......}
             default:{
-				......}
+                ......}
         }
     }
     return hitColor;
@@ -706,12 +696,14 @@ hitColor = lightAmt * payload->hit_obj->evalDiffuseColor(st) * payload->hit_obj-
 ```
 
 参照的公式：
+
 $$
 \begin{aligned}
 L & =L_a+L_d+L_s \\
 & =k_a I_a+k_d\left(I / r^2\right) \max (0, \mathbf{n} \cdot \mathbf{l})+k_s\left(I / r^2\right) \max (0, \mathbf{n} \cdot \mathbf{h})^p
 \end{aligned}
 $$
+
 但是这里仅仅计算了漫反射项和高光项。
 
 这里需要注意的是，在一些简化的光照模型中，为了简化计算或者获得特定的视觉效果，有时会忽略这个因素。在本作业框架中，看起来似乎就是这样的情况。本框架作者可能假定了光源的强度已经考虑了距离的影响，或者只想要一个简化的模型，忽略了距离的影响。但是在除以距离的平方后，物体变成了黑色。
@@ -738,8 +730,6 @@ scene.Add(std::make_unique<Light>(Vector3f(15, 25, -6), 1000));
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/DRws14brH9uay8g.png" alt="image-20230620105913505" style="zoom: 33%;" />
 
-
-
 ### 6. `Renderer::Render`: 主渲染函数，它迭代处理图像中的所有像素，生成主光线，并将这些光线投入场景进行渲染
 
 终于写到主渲染函数了，这里会遍历所有的像素，生成主射线，发射光线进行光线碰撞。最后写出到文件。
@@ -747,20 +737,20 @@ scene.Add(std::make_unique<Light>(Vector3f(15, 25, -6), 1000));
 这部分也是我们作业的TODO部分，接下来我们详细看看吧。
 
 1. **初始化framebuffer**：用一个指定大小的Vector3f向量（大小为场景宽度*场景高度）来创建framebuffer。
-
+   
    ```c++
    std::vector<Vector3f> framebuffer(scene.width * scene.height);
    ```
 
 2. **计算缩放因子和图像宽高比**：使用场景的视角（fov）来计算缩放因子。图像宽高比是用来保证图像的纵横比正确。
-
+   
    ```c+=
    float scale = std::tan(deg2rad(scene.fov * 0.5f));
    float imageAspectRatio = scene.width / (float)scene.height;
    ```
 
 3. **遍历每个像素**：对于场景中的每个像素，计算出一条从眼睛位置到该像素的主光线。
-
+   
    ```c++
    for (int j = 0; j < scene.height; ++j){
        for (int i = 0; i < scene.width; ++i){
@@ -770,7 +760,7 @@ scene.Add(std::make_unique<Light>(Vector3f(15, 25, -6), 1000));
    ```
 
 4. **生成主光线**：使用像素的坐标和缩放因子以及图像宽高比来计算光线的方向。方向向量需要被归一化。
-
+   
    ```c++
    float x;
    float y;
@@ -781,13 +771,13 @@ scene.Add(std::make_unique<Light>(Vector3f(15, 25, -6), 1000));
    ```
 
 5. **光线追踪**：调用 `castRay` 函数来追踪光线，获取光线击中点的颜色。然后将这个颜色存储在framebuffer中。
-
+   
    ```c++
    framebuffer[m++] = castRay(eye_pos, dir, scene, 0);
    ```
 
 6. **保存结果到文件**：将framebuffer写入到一个PPM格式的文件中。PPM（Portable PixMap）格式是一种简单的图像格式，能够存储RGB颜色值。
-
+   
    ```c++
    // save framebuffer to file
    ......
@@ -824,7 +814,7 @@ y = (1-2.f*((j+0.5)/scene.height))*scale;
 
 ```c++
 bool rayTriangleIntersect(const Vector3f& v0, const Vector3f& v1, const Vector3f& v2, const Vector3f& orig,
-	const Vector3f& dir, float& tnear, float& u, float& v)
+    const Vector3f& dir, float& tnear, float& u, float& v)
 {
     // TODO: Implement this function that tests whether the triangle
     // that's specified bt v0, v1 and v2 intersects with the ray (whose
@@ -845,6 +835,7 @@ bool rayTriangleIntersect(const Vector3f& v0, const Vector3f& v1, const Vector3f
 - `u` 和 `v`：这两个也是输出参数，如果光线与三角形相交，它们将被设置为交点在三角形平面内的重心坐标。
 
 可以在我[上一篇文章中查看](https://remoooo.com/cg/9-1.html#ci_title10)详细原理。这里只贴出最终的公式：
+
 $$
 \left[\begin{array}{c}t \\b_1 \\b_2\end{array}\right]
 =
@@ -854,6 +845,7 @@ $$
 \overrightarrow{\mathbf{S_2}} \cdot \overrightarrow{\mathbf{D}}
 \end{array}\right]
 $$
+
 算法的大致步骤是：
 
 1. 首先计算三角形的两个边向量 `E1 = v1 - v0` 和 `E2 = v2 - v0`。
@@ -885,6 +877,5 @@ $$
 4. https://zhuanlan.zhihu.com/p/480405520
 
 5. https://en.wikipedia.org/wiki/Fresnel_equations
-
 
 [1]: https://remoooo.com/usr/uploads/2023/06/294363858.zip

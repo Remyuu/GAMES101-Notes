@@ -1,8 +1,6 @@
 您好，如果您觉得本站的浏览体验不佳，可以下载本文pdf阅读，谢谢。
 [计算机图形学十：PBR基于物理的渲染基础（辐射度量学、渲染方程与蒙特卡洛路径追踪）.pdf](https://remoooo.com/usr/uploads/2023/06/3293924482.pdf)
 
-
-
 1. 辐射度量学（Radiometry）
 2. 双向反射分布函数（BRDF）
 3. 反射方程（The Reflection Equation）
@@ -16,8 +14,6 @@
 8. "俄罗斯轮盘赌"（Russian Roulette）
 9. Whitted-style VS. Path Tracing
 10. 一些前沿的领域Modern Concepts
-
-
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/oEZFrVs6ekPDOvG-20230627154517296-20230627154955535.png" alt="image-20230625213627435" style="zoom:50%;" />
 
@@ -84,9 +80,11 @@ Whitted-Style光线追踪模型往往适合含有镜面或玻璃等高光材料�
 ### 辐射能量（Radiant Energy）
 
 辐射能量是电磁辐射的能量，单位是焦耳（Joule），用 $Q$ 表示：
+
 $$
 Q [J = Joule]
 $$
+
 辐射能量是一个标量，不考虑方向。
 
 ### 辐射通量（Radiant Flux，也称为 Power）
@@ -107,13 +105,13 @@ $$
 
 单位是瓦特每立体角（Watt per steradian）。
 
-
 $$
 \begin{gathered}
 I(\omega) \equiv \frac{\mathrm{d} \Phi}{\mathrm{d} \omega} \\
 {\left[\frac{\mathrm{W}}{\mathrm{sr}}\right]\left[\frac{\mathrm{lm}}{\mathrm{sr}}=\mathrm{cd}=\text { candela }\right]}
 \end{gathered}
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/pIaxTAE6bshFRZ2.png" alt="image-20230625151650861" style="zoom:50%;" />
 
 #### 单位角和单位立体角（Angles and Solid Angles）
@@ -133,14 +131,19 @@ $$
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/SkQpGiCWFymMn8d.png" alt="image-20230625153225065" style="zoom: 33%;" />
 
 根据二维角的定义，直接写出球面上的微小元 $dA_j$ ：
+
 $$
 dA_j = r^2 sin(\theta)d \phi
 $$
+
 再根据极小立体角的定义，得到 $\omega$ ：
+
 $$
 \mathrm{d} \omega=\frac{\mathrm{d} A_j}{r^2}=\sin \theta \mathrm{d} \theta \mathrm{d} \phi
 $$
+
 对一个极小立体角在一整个球面做积分：
+
 $$
 \begin{aligned}
 \Omega & =\int_{S^2} \mathrm{~d} \omega \\
@@ -150,6 +153,7 @@ $$
 & =4 \pi
 \end{aligned}
 $$
+
 立体角的国际制单位是球面度（steradian，sr）。
 
 其中， $\omega $ 的几何意义是一个单位向量。 $\omega $ 在一开始就已经由 $\theta , \phi$ 所决定。随后在此两个角的基础上增加微小增量 $d\theta , d\phi$ ，得到 $d\omega$ 。
@@ -163,12 +167,14 @@ $$
 照度（Irradiance）是指单位时间内射入或者射出某一平面单位面积的光的通量（即功率）。
 
 单位为瓦特/平方米（ $W/m^2$ ）：
+
 $$
 \begin{gathered}
 E(\mathbf{x}) \equiv \frac{\mathrm{d} \Phi(\mathbf{x})}{\mathrm{d} A} \\
 {\left[\frac{\mathrm{W}}{\mathrm{m}^2}\right]\left[\frac{\operatorname{lm}}{\mathrm{m}^2}=\operatorname{lux}\right]}
 \end{gathered}
 $$
+
 描述物体表面被光源照亮的程度。
 
 借助此概念也可以轻松得到Lambert's Cosine Law的照度E。
@@ -184,15 +190,15 @@ $$
 在定义中关于接收面积的部分是**每单位垂直面积**，这就是为什么定义中有一个余弦量。
 
 辐射度的单位是瓦特每平方米每立体角（Watt per square meter per steradian，W·m⁻²·sr⁻¹）：
+
 $$
 \begin{gathered}
 L(\mathrm{p}, \omega) \equiv \frac{\mathrm{d}^2 \Phi(\mathrm{p}, \omega)}{\mathrm{d} \omega \mathrm{d} A \cos \theta} \\
 {\left[\frac{\mathrm{W}}{\mathrm{srm}^2}\right]\left[\frac{\mathrm{cd}}{\mathrm{m}^2}=\frac{\operatorname{lm}}{\mathrm{sr} \mathrm{m}^2}=\mathrm{nit}\right]}
 \end{gathered}
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/aVK1QEPjhdiu7IZ.png" alt="image-20230625161933924" style="zoom:50%;" />
-
-
 
 ### 区分辐照度和辐射度
 
@@ -205,16 +211,18 @@ $$
 下面公式第一行中，等号左边是辐照度（Irradiance）的微分，右边是辐射度（Radiance）。
 
 将第一行左右两边积分，得到第二行辐照度（Irradiance）。
+
 $$
 \begin{aligned}
 d E(\mathrm{p}, \omega) & =L_i(\mathrm{p}, \omega) \cos \theta \mathrm{d} \omega \\
 E(\mathrm{p}) & =\int_{H^2} L_i(\mathrm{p}, \omega) \cos \theta \mathrm{d} \omega
 \end{aligned}
 $$
+
 其中，
 
--  $E(p)$ 的物理含义是点p上每单位照射面积的功率，即辐照度（Irradiance）；
--  $L_i(p,\omega)$ 指入射光每立体角，每垂直面积的功率
+- $E(p)$ 的物理含义是点p上每单位照射面积的功率，即辐照度（Irradiance）；
+- $L_i(p,\omega)$ 指入射光每立体角，每垂直面积的功率
 
 因此积分式子右边的 $cos\theta$ 解释了面积上定义的差异。
 
@@ -223,6 +231,7 @@ $$
 辐照度（Irradiance）是由所有不同方向的辐射度（Radiance）累加得到。
 
 简而言之，下图中的 $d A$ 是Irradiance中定义所对应的， $dA^{\perp}$  是Radiance中所定义。即：
+
 $$
 dA^\perp=dAcod\theta
 $$
@@ -230,6 +239,7 @@ $$
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/HsiFVNRLG1CEBwX.png" alt="image-20230625162457138" style="zoom:50%;" />
 
 那么结论就是：
+
 $$
 \mathrm{L_i}(\mathrm{p}, \omega)=\frac{\mathrm{dE}(\mathrm{p})}{\mathrm{dA^\perp}}=\frac{\mathrm{dE}(\mathrm{p})}{\mathrm{d} \omega \cos \theta}
 $$
@@ -243,19 +253,25 @@ $$
 BRDF描述的是：
 
 在一个微小面积元上接受到了某个方向 $\omega_i $ 能量是 $E$ 的入射光，我们将该点的辐照度（Irradiance） $\omega_i$方向上的辐射度（Radiance）记为：
+
 $$
 d E\left(\omega_i\right)=L\left(\omega_i\right) \cos \theta_i d \omega_i
 $$
+
 然后将反射到某个方向 $\omega_r$ 的辐射度（Radiance）记为：
+
 $$
 d L_r\left(x, \omega_r\right)
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/cCs1EOXqLBQrIYj.png" alt="image-20230625172128669" style="zoom:50%;" />
 
 反射出去的光线的Radiance（ $d L_r\left(x, \omega_r\right)$ ）通过BRDF计算。
+
 $$
 f_r\left(\omega_i \rightarrow \omega_r\right)=\frac{\mathrm{d} L_r\left(\omega_r\right)}{\mathrm{d} E_i\left(\omega_i\right)}=\frac{\mathrm{d} L_r\left(\omega_r\right)}{L_i\left(\omega_i\right) \cos \theta_i \mathrm{~d} \omega_i} \quad\left[\frac{1}{\mathrm{sr}}\right]
 $$
+
 BRDF接受两个参数：入射光方向 $\omega_i$ ，反射光方向 $\omega_r$ 。
 
 函数值为反射光的radiance与入射光的iiradiance的比值，上式第二个等号分母中利用iiradiance和radiance的关系展开。
@@ -273,9 +289,11 @@ BRDF接受两个参数：入射光方向 $\omega_i$ ，反射光方向 $\omega_r
 我们现在研究由不同方向的入射光线的Irradiance对 $w_r$ 的贡献。
 
 将每一个入射方向的光线的Irradiance都乘上对应的BRDF函数，就得到了在这个微小面元上所有的入射方向反射到 $w_r $ 的辐射度Radiance，公式如下：
+
 $$
 L_r\left(\mathrm{p}, \omega_r\right)=\int_{H^2} f_r\left(\mathrm{p}, \omega_i \rightarrow \omega_r\right) L_i\left(\mathrm{p}, \omega_i\right) \cos \theta_i \mathrm{~d} \omega_i
 $$
+
 至此，通过反射方程和辐射度量学的概念，结合双向反射分布函数（BRDF），我们拥有了一个更准确和完善的光照模型，并且解决了文章开头提出的问题！
 
 ----
@@ -299,26 +317,30 @@ $$
 渲染方程是由James Kajiya在1986年提出的，它描述了在给定光照条件下，光如何与场景中的物体交互，以及如何计算最终的图像。在论文《The Rendering Equation》中给出了入射光的函数和BRDF（双向反射分布函数）。
 
 > 此外，还有一些现代的图形学和机器学习研究中，他们使用或者扩展了这个渲染方程。例如，一些用于视图合成的研究中，提出了在特征空间而不是颜色空间编码渲染方程的方法，以便更好地模拟复杂的视图依赖效应。还有一些研究使用了Neural Radiance Fields (NeRF) 方法，通过在光线上取样点并使用渲染方程整合信息来渲染单独的光线。
->
+> 
 > 以下是相关资料：
->
+> 
 > 1. https://dl.acm.org/doi/10.1145/15886.15902
 > 2. https://ar5iv.org/abs/2303.03808
 > 3. https://ar5iv.org/abs/2106.05264
 
 渲染方程在反射方程的基础上添加了一个自发光项（Emission term）：
+
 $$
 L_o\left(p, \omega_o\right)=L_e\left(p, \omega_o\right)+\int_{\Omega^{+}} L_i\left(p, \omega_i\right) f_r\left(p, \omega_i, \omega_o\right)\left(n \cdot \omega_i\right) \mathrm{d} \omega_i \\ 
 \tag{1}
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/mBwR7drTV3U59oK.png" alt="image-20230625213525244" style="zoom:50%;" />
 
 - 无论是面光源还是物体，都相当于无穷多个点光源的集合，因此我们理论上就可以对所有方向进行积分
 
 我们将上面的方程简写成：
+
 $$
 I(u)=e(u)+\int I(v) K(u, v) d v
 $$
+
 where:
 
 - $I(u)$ 是辐射出去的光
@@ -336,9 +358,11 @@ where:
 诺伊曼级数（Neumann series）是一种在函数分析和线性代数中广泛使用的级数。
 
 If $\lim _{n \rightarrow \infty} \mathbf{A}^n=\mathbf{0}$, then $\mathbf{I}-\mathbf{A}$ is nonsingular and
+
 $$
 (\mathbf{I}-\mathbf{A})^{-1}=\mathbf{I}+\mathbf{A}+\mathbf{A}^2+\cdots=\sum_{k=0}^{\infty} \mathbf{A}^k
 $$
+
 其中，I 是单位矩阵，A 是任意的线性映射或者矩阵。
 
 详细资料查看：[Courant and Hilbert 1953]
@@ -346,14 +370,19 @@ $$
 ----
 
 回到渲染方程，通过Neumann Series，我们可以将渲染方程 eq.(1) 写成如下形式：
+
 $$
 I=g \epsilon+g M I
 $$
+
  $M$ 是由 eq.(1) 给出的线性算子，现在重写方程：
+
 $$
 (1-g M) I=g \epsilon
 $$
+
 由于1是identity operator，将方程正式写为：
+
 $$
 \begin{aligned}
 I & =(1-g M)^{-1} g \epsilon \\
@@ -361,6 +390,7 @@ I & =(1-g M)^{-1} g \epsilon \\
 \end{aligned}
 \tag{2}
 $$
+
 where:
 
 - 第一项是**Emission directly from light sources**: 这是直接光源发射的光线，例如从灯泡或太阳等主动发光的物体发出的光线。
@@ -405,17 +435,23 @@ where:
 ### 蒙特卡洛积分定义
 
 我们希望求出一个函数 $f(x)$ 在积分域 $[a,b] $ 上的积分值：
+
 $$
 \int_a^b f(x) d x
 $$
+
 选定一个采样的分布 $ p(x)$ ：
+
 $$
 X_i \sim p(x)
 $$
+
 通过该分布进行多次函数值的采样：
+
 $$
 F_N=\frac{1}{N} \sum_{i=1}^N \frac{f\left(X_i\right)}{p\left(X_i\right)}
 $$
+
 By the way，为什么公式中出现了 $\frac{1}{p(X_i)}$ ？
 
 个人的理解是，蒙特卡洛积分的数学期望不应该和采样方法有关。举个简单的例子，有一个100个元素的数组，其中有50个0，50个1。
@@ -432,25 +468,34 @@ By the way，为什么公式中出现了 $\frac{1}{p(X_i)}$ ？
 ### 蒙特卡洛积分估计量无偏证明
 
 欲证明估计量无偏，即证蒙特卡洛法的积分估计量的数学期望等于被积函数的积分真值，即证明下式成立：
+
 $$
 F_N=\int f(x) d x
 $$
+
 证：
+
 $$
 \begin{aligned}
 & 假设X_i(i=1,2,3,...,N)是 \Omega 内的随机变量。\\
 & \Omega 取值在ab之间。
 \end{aligned}
 $$
+
 构造：
+
 $$
 F_N=\frac{1}{N} \sum_{i=1}^N \frac{f\left(X_i\right)}{p\left(X_i\right)}
 $$
+
 取：
+
 $$
 Y = \frac{f(X)}{pdf(X)}
 $$
+
 计算蒙特卡洛法积分的数学期望：
+
 $$
 \begin{aligned}
 & E\left[F_N(X)\right] \\
@@ -462,11 +507,13 @@ $$
 & =\int_a^b f(x) d x
 \end{aligned}
 $$
+
 可以得到的结论是，由于估计量的数学期望等于被估计参数的真实值，所以我们可以说，蒙特卡洛积分的估计是**无偏的**。
 
 ### 蒙特卡洛积分高维推广
 
 我们也可以将定义域拓展至任意维度 $\Omega$ ，方法如下：
+
 $$
 \begin{aligned}
 & I=\int_{\Omega} f(x) d \mu(x) \\ \\
@@ -481,6 +528,7 @@ $$
 ### 蒙特卡洛积分方差收敛
 
 分析随着样本增加，数学期望 $F_N$ 的方差 $\sigma^2 [F_N]$ 的变化，以此得到MC积分方法收敛速度特性。
+
 $$
 \begin{aligned}
 &\begin{aligned}
@@ -494,6 +542,7 @@ $$
 &\sigma\left[F_N\right]=\frac{1}{\sqrt{N}} \sigma[Y]
 \end{aligned}
 $$
+
 这就是蒙特卡洛积分的"根n收敛"性质。
 
 - **积分估计量的收敛与被积函数的维度等都无关，只跟样本数有关。**
@@ -532,12 +581,14 @@ $$
 #### 基本原理
 
 对于随机变量$X$，其累积分布函数（CDF，Cumulative Distribution Function）定义为：
+
 $$
 F(x)=P\{X \leq x\}, \quad-\infty<x<\infty
 $$
-其中$F(x)$的值域为$[0,1]$，是一个非递减函数。
 
-设U为一个在$[0,1]$上的均匀随机变量，我们可以证明，如果$F$是连续的，那么$F^{-1}(U)$的分布函数就是$F(x)$，也就是说$F^{-1}(U)$与$X$有相同的分布。
+其中$F(x)$的值域为 $[0,1]$ ，是一个非递减函数。
+
+设U为一个在 $[0,1]$ 上的均匀随机变量，我们可以证明，如果$F$是连续的，那么 $F^{-1}(U)$ 的分布函数就是 $F(x)$ ，也就是说 $F^{-1}(U)$ 与 $X$ 有相同的分布。
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/2JFwqHrW8zXx9Kv.png" alt="image-20230626112212616" style="zoom:50%;" />
 
@@ -548,11 +599,14 @@ $$
 ----
 
 Let $F$ be a cumulative distribution function, and let $F^{-1}$ be its generalized inverse function (using the infimum because CDFs are weakly monotonic and right-continuous): 
+
 $$
 F^{-1}(u)=\inf \{x \mid F(x) \geq u\} \quad(0<u<1) .
 $$
+
 Claim: If $U$ is a uniform random variable on $[0,1]$ then $F^{-1}(U)$ has $F$ as its CDF.
 Proof:
+
 $$
 \begin{aligned}
 & \operatorname{Pr}\left(F^{-1}(U) \leq x\right) \\
@@ -572,8 +626,6 @@ $$
 需要注意的是：
 
 - 此方法要求能够容易地计算CDF的反函数。
-
-
 
 ### 选择策略2. 拒绝采样法（Rejection Sampling）
 
@@ -599,9 +651,9 @@ $$
 ### More todo...
 
 > 这里其实还有很多内容需要学习，但是都相对复杂，放到其他文章讲解吧。
->
+> 
 > ---- 马尔可夫链蒙特卡洛
->
+> 
 > -- 方差缩减
 
 ### 蒙特卡洛积分优缺点
@@ -655,7 +707,7 @@ print(f"蒙特卡洛估计值：{integral_estimate}")
 ```
 
 > 结果输出：
->
+> 
 > 蒙特卡洛估计值：152.25343412130383
 
 还算是准确。
@@ -682,7 +734,7 @@ print(f"蒙特卡洛估计值：{integral_estimate}")
 需要注意，由于我们使用正态分布采样，部分样本会落在$[2, 5]$区间外，我们在计算前选择忽略这部分样本。这样的处理在统计学中称为截尾（truncation）。
 
 > 结果输出：
->
+> 
 > 蒙特卡洛估计值：152.67692954205035
 
 **Halton序列**的python代码：
@@ -703,7 +755,7 @@ print(f"蒙特卡洛估计值：{integral_estimate}")
 ```
 
 > 结果输出：
->
+> 
 > 蒙特卡洛估计值：152.24989931167778
 
 **Sobol序列**重写的python代码：
@@ -723,16 +775,18 @@ print(f"蒙特卡洛估计值：{integral_estimate}")
 ```
 
 > 结果输出：
->
+> 
 > 蒙特卡洛估计值：152.24996719136274
 
 ## 蒙特卡洛路径追踪（Monte Carlo Path Tracing）
 
 回顾上文讲的 eq.(1) 渲染方程（The Rendering Equation）：
+
 $$
 L_o\left(p, \omega_o\right)=L_e\left(p, \omega_o\right)+\int_{\Omega^{+}} L_i\left(p, \omega_i\right) f_r\left(p, \omega_i, \omega_o\right)\left(n \cdot \omega_i\right) \mathrm{d} \omega_i \\ 
 \tag{1}
 $$
+
 其中，这个方程涉及以下两点：
 
 1. 求解半球积分较为困难
@@ -741,21 +795,27 @@ $$
 这个时候就可以用蒙特卡洛积分求解该方程了。
 
 计算之前，我们先将发光项舍去，方便计算。也就是将 eq.(1) 改写为 eq.(3) ：
+
 $$
 L_o\left(p, \omega_o\right)=\int_{\Omega^{+}} L_i\left(p, \omega_i\right) f_r\left(p, \omega_i, \omega_o\right)\left(n \cdot \omega_i\right) \mathrm{d} \omega_i \\ 
 \tag{3}
 $$
+
 将 eq.(2) 应用蒙特卡洛积分得到：
+
 $$
 \begin{aligned}
 L_o\left(p, \omega_o\right) & =\int_{\Omega^{+}} L_i\left(p, \omega_i\right) f_r\left(p, \omega_i, \omega_o\right)\left(n \cdot \omega_i\right) \mathrm{d} \omega_i \\
 & \approx \frac{1}{N} \sum_{i=1}^N \frac{L_i\left(p, \omega_i\right) f_r\left(p, \omega_i, \omega_o\right)\left(n \cdot \omega_i\right)}{p\left(\omega_i\right)}
 \end{aligned}
 $$
+
 在此不妨考虑最简单的情况，对半球面 $H^2$ 进行均匀采样，此时pdf就是：
+
 $$
 pdf(\omega_i) = \frac{1}{2 \pi}
 $$
+
 我们目前只考虑直接光照，也就是说，只有采样方向 $w_i$ ：
 
 ```
@@ -770,8 +830,6 @@ shade(p, w_o)
 ```
 
 计算在某一点p，朝向某一方向$w_o$的光线的颜色（或亮度）$L_o$。通过模拟光线从p点出发，随机散射到各个方向，然后看这些方向是否能打到光源（light）
-
-
 
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/qwAISxeQnFsX3gr-20230627155150509.png" alt="image-20230625162635792" style="zoom:50%;" />
 
@@ -813,9 +871,9 @@ shade(p, wo)
     Randomly choose **ONE** direction wi~pdf(w)
     Trace a ray r(p, wi)
     If ray r hit the light
-		Return L_i * f_r * cosine / pdf(wi)
-	Else If ray r hit an object at q
-		Return shade(q, -wi) * f_r * cosine / pdf(wi)
+        Return L_i * f_r * cosine / pdf(wi)
+    Else If ray r hit an object at q
+        Return shade(q, -wi) * f_r * cosine / pdf(wi)
 ```
 
 但是，这种方法也有一个缺点，那就是它可能无法准确地模拟所有可能的光线路径。因为每次只采样一个方向，所以有很多可能的光线路径将不会被考虑到，这可能会导致渲染效果的不准确。
@@ -883,9 +941,9 @@ shade(p, w_o)
     Randomly choose ONE direction wi~pdf(w)
     Trace a ray r(p, w_i)
     If ray r hit the light
-    	Return L_i * f_r * cosine / pdf(w_i) / P_RR 
+        Return L_i * f_r * cosine / pdf(w_i) / P_RR 
     Else If ray r hit an object at q
-    	Return shade(q, -w_i) * f_r * cosine / pdf(w_i) / P_RR
+        Return shade(q, -w_i) * f_r * cosine / pdf(w_i) / P_RR
 ```
 
 注意：俄罗斯轮盘赌在这里的主要作用是进行方差减小和减少无效计算，通过引入一个固定的概率来控制是否提前结束路径的追踪。而并没有用于计算或考虑路径的贡献。
@@ -897,11 +955,12 @@ shade(p, w_o)
 ### 直接光照采样优化
 
 回顾我们一开始介绍渲染方程（The Rendering Equation）的 eq.(2) 简化方程：
-$$
-I = g \epsilon+g M g \epsilon+g M g M g \epsilon+g(M g)^3 \epsilon \cdots
 
+$$
+I = g \epsilon+g M g \epsilon+g M g M g \epsilon+g(M g)^3 \epsilon \cdot
 \tag{2}
 $$
+
 <img src="https://regz-1258735137.cos.ap-guangzhou.myqcloud.com/remo_t/nu6zHfb4SxkaAsN.png" alt="image-20230626200705945" style="zoom:50%;" />
 
 我们知道第一项计算的是直接光照，不需要计算其他的光线。那么在这个过程中就有大量的光线被“浪费”了。
@@ -923,11 +982,14 @@ $$
 所以，如果想要对光源进行随机采样的并依然使用蒙题卡洛积分，我们就需要找到 $d\omega_i$ 与 $dA$ 的关系，也就是说将渲染方程的积分变量从原来的 $d\omega_i$ 改为 $dA$ 。
 
 立体角的定义就是单位球上投影的面积。
+
 $$
 d \omega=\frac{d A \cos \theta^{\prime}}{\left\|x^{\prime}-x\right\|^2}
 \tag{4}
 $$
+
 然后将 eq.(4) 代入到 eq.(1) 渲染方程中，得到 eq.(5) ：
+
 $$
 \begin{aligned}
 L_o\left(x, \omega_o\right) & =\int_{\Omega^{+}} L_i\left(x, \omega_i\right) f_r\left(x, \omega_i, \omega_o\right) \cos \theta \mathrm{d} \omega_i \\
@@ -935,6 +997,7 @@ L_o\left(x, \omega_o\right) & =\int_{\Omega^{+}} L_i\left(x, \omega_i\right) f_r
 \end{aligned}
 \tag{5}
 $$
+
 直接光照采样优化的原理就已经介绍完毕了，我们直接使用 eq.(5) 改写路径追踪（Monte Carlo Path Tracing）的伪代码：
 
 ```python
@@ -987,6 +1050,7 @@ If the ray is not blocked in the middle
 ## 一些前沿的领域
 
 - **Unidirectional Path Tracing（单向路径追踪）**：基于蒙特卡洛的全局光照算法，它能够处理各种光线交互，包括漫反射、镜面反射、折射、散射等。
+
 - **Bidirectional Path Tracing（双向路径追踪）**：对单向路径追踪的扩展。特别擅长处理小光源、透射材质等。
 
 - **Photon mapping（两步渲染技术）**：首先，它从光源发射光子，光子在场景中进行若干次碰撞后存储到光子图（Photon Map）中，然后再使用光子图进行光照计算。由于它分离了直接照明和间接照明的计算，使得它对场景的变化具有良好的抗干扰性。
@@ -1004,6 +1068,3 @@ If the ray is not blocked in the middle
 5. https://zhuanlan.zhihu.com/p/146144853
 6. https://en.wikipedia.org/wiki/Inverse_transform_sampling
 7. https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture17.pdf
-
-
-
