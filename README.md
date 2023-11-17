@@ -4,7 +4,7 @@
 > 
 > 本来应该有第七、八、十一和十二章的，分别是：**高级纹理映射**、**几何**、**相机透镜光场**与**动画模拟**，但是个人能力/时间有限，先挖个坑～
 
-Github：https://github.com/Remyuu/GAMES101-Homework
+Github：[GitHub - Remyuu/GAMES101-Homework: GAMES101 Homework Collection](https://github.com/Remyuu/GAMES101-Homework)
 
 # 主线
 
@@ -98,7 +98,5 @@ Github：https://github.com/Remyuu/GAMES101-Homework
 # 教材
 
 ## [Fundamentals of Computer Graphics, Fourth Edition](https://remoooo.com/it/740.html)
-
-
 
 
